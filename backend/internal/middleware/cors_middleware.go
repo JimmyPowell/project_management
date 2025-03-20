@@ -10,7 +10,7 @@ import (
 // CorsMiddleware CORS中间件配置
 func CorsMiddleware() gin.HandlerFunc {
 	return cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"}, // 前端地址
+		AllowOrigins:     []string{"*"}, // 允许所有来源
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},

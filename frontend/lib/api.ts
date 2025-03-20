@@ -80,7 +80,6 @@ export const apiRequest = async (
   const options: RequestInit = {
     method,
     headers,
-    credentials: 'include',
   };
 
   if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
