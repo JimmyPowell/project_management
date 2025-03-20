@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  backend:
+    image: ${DOCKER_REGISTRY:-yourregistry}/pm-backend:latest
+    container_name: pm-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+      - JWT_SECRET=your_jwt_secret_key_change_in_production
+      - ACCESS_TOKEN_EXPIRY=15m
+      - REFRESH_TOKEN_EXPIRY=7d
+      # MySQL配置
+      - DB_DRIVER=mysql
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=pmuser
+      - DB_PASSWORD=pmpassword
+      - DB_NAME=project_management
+      - DB_CHARSET=utf8mb4
+      - DB_PARSEDATE=True
+    networks:
+      - pm-network
+    depends_on:
+      - db
+
+  frontend:
+    image: ${DOCKER_REGISTRY:-yourregistry}/pm-frontend:latest
+    container_name: pm-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8080/api
+    networks:
+      - pm-network
+    depends_on:
+      - backend
+
+  db:
+    image: mysql:8.0
+    container_name: pm-mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=project_management
+      - MYSQL_USER=pmuser
+      - MYSQL_PASSWORD=pmpassword
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./pm.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - pm-network
+    command: --default-authentication-plugin=mysql_native_password
+
+networks:
+  pm-network:
+    driver: bridge
+
+volumes:
+  mysql-data: 
