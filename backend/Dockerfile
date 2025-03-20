@@ -12,7 +12,7 @@ RUN go mod download
 COPY . .
 
 # 构建应用程序
-RUN CGO_ENABLED=0 GOOS=linux go build -o main .
+RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/api/main.go
 
 # 使用轻量级镜像作为最终镜像
 FROM alpine:latest
